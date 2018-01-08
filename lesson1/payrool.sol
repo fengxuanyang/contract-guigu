@@ -30,7 +30,7 @@ contract Palyroll {
   }
 
   function updateEmployeeAddr(address addr)   {
-    //TODO chekc addr 有效
+    //TODO chekc addr valid
       if(msg.sender != employerAddr || addr  == employeeAddr) {
           revert();
       }
