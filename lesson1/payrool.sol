@@ -9,7 +9,7 @@ contract Palyroll {
 
 
   function addFund() payable returns(address){
-      employerAddr = msg.sender;
+    employerAddr = msg.sender;
     return employerAddr;
   }
 
@@ -25,16 +25,15 @@ contract Palyroll {
     return  salary  / (1 ether);
   }
 
-
   function hasEnoughFund()  returns(bool){
-    return this.balance >= calcPayCount()*salary ;
+    return this.balance >= calcPayCount() * salary ;
   }
 
-
-  function updateSalary(uint sal)   {
-     require(sal > 0 );
-     require(msg.sender == employerAddr);
-     salary = sal * (1 ether);
+  function updateSalary(uint saleth)   {
+      if(saleth <= 0 ||msg.sender != employerAddr ) {
+          revert();
+      }
+     salary = saleth * (1 ether);
   }
 
   function getPay() returns(uint) {
