@@ -8,7 +8,7 @@ contract Palyroll {
   uint lastPayday  = now;
 
   function Payroll() {
-      employerAddr = msg.sender;
+    employerAddr = msg.sender;
   }
 
   function addFund() payable returns(address){
@@ -16,36 +16,40 @@ contract Palyroll {
     return employerAddr;
   }
 
-    function calcRunway() returns (uint) {
-      return this.balance / salary;
-    }
+  function calcRunway() returns (uint) {
+    return this.balance / salary;
+  }
 
-     function calcPayCount() returns(uint) {
-      return ( now - lastPayday) /payPeriod;
-   }
+  function calcPayCount() returns(uint) {
+    return ( now - lastPayday) /payPeriod;
+  }
+
+  function getSalary()  returns(uint){
+    return  salary  / (1 ether);
+  }
 
   function hasEnoughFund()  returns(bool){
-      return this.balance >= calcPayCount()*salary ;
-   }
+    return this.balance >= calcPayCount()*salary ;
+  }
 
 
-   function updateSalary(uint sal) {
-       require(salary > 0 );
-       require(msg.sender == employerAddr);
-       salary = sal * (1 ether);
-   }
+  function updateSalary(uint sal)  {
+     require(salary > 0 );
+     require(msg.sender == employerAddr);
+     salary = sal * (1 ether);
+  }
 
   function getPay() returns(uint) {
-      uint payCount = calcPayCount();
-       if(payCount > 0) {
-           uint totalsalary = salary * payCount;
-           if(this.balance >= totalsalary) {
-               lastPayday =lastPayday + payCount * payPeriod;
-               employeeAddr.transfer(totalsalary );
-               return this.balance;
-           }
-       }
-       revert();
+    uint payCount = calcPayCount();
+     if(payCount > 0) {
+         uint totalsalary = salary * payCount;
+         if(this.balance >= totalsalary) {
+             lastPayday =lastPayday + payCount * payPeriod;
+             employeeAddr.transfer(totalsalary );
+             return this.balance;
+         }
+     }
+     revert();
   }
 
 }
