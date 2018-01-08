@@ -32,7 +32,7 @@ contract Palyroll {
 
 
   function updateSalary(uint sal)   {
-     require(salary > 0 );
+     require(sal > 0 );
      require(msg.sender == employerAddr);
      salary = sal * (1 ether);
   }
