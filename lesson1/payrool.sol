@@ -29,11 +29,12 @@ contract Palyroll {
     return this.balance >= calcPayCount() * salary ;
   }
 
-  function updateSalary(uint saleth)   {
-      if(saleth <= 0 ||msg.sender != employerAddr ) {
+  function updateSalary(uint newsalary)   {
+      if(newsalary <= 0 ||msg.sender != employerAddr ) {
           revert();
       }
-     salary = saleth * (1 ether);
+      getPay();
+      salary = newsalary * (1 ether);
   }
 
   function getPay() returns(uint) {
