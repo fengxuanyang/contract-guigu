@@ -7,9 +7,6 @@ contract Palyroll {
   uint constant payPeriod = 10 seconds;
   uint lastPayday  = now;
 
-  function Payroll() {
-    employerAddr = msg.sender;
-  }
 
   function addFund() payable returns(address){
       employerAddr = msg.sender;
@@ -28,12 +25,13 @@ contract Palyroll {
     return  salary  / (1 ether);
   }
 
+
   function hasEnoughFund()  returns(bool){
     return this.balance >= calcPayCount()*salary ;
   }
 
 
-  function updateSalary(uint sal)  {
+  function updateSalary(uint sal)   {
      require(salary > 0 );
      require(msg.sender == employerAddr);
      salary = sal * (1 ether);
