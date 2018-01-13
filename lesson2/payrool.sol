@@ -4,7 +4,7 @@ contract Payroll {
   struct Employee {
     address id  ;
     uint salary  ;
-    uint lastPayday ;
+    uint lastpayday ;
   }
   uint constant payCycle  = 10 seconds;
   address owner ;
@@ -15,7 +15,7 @@ contract Payroll {
   }
 
   function _payFullSal(Employee  employee) private {
-    uint fullSalary = employee.salary *(now - employee.lastPayday) / payCycle;
+    uint fullSalary = employee.salary *(now - employee.lastpayday) / payCycle;
     employee.id.transfer(fullSalary);
   }
 
@@ -32,15 +32,17 @@ contract Payroll {
     return this.balance ;
   }
 
-  function calculRunway() returns(uint,uint) {
+  function calculRunway() returns(uint) {
     uint totalsalary = 0 ;
     uint amount  =  employees.length;
-    assert( employees.length > 0);
     for(uint i = 0 ; i < amount ; i++) {
-     totalsalary += employees[i].salary;
+     totalsalary = employees[i].salary;
     }
-    return (this.balance / totalsalary,amount);
+    return this.balance / totalsalary;
   }
+
+
+
 
   function addEmployee(address eaddr ,uint sal) {
     require(msg.sender == owner );
@@ -67,21 +69,14 @@ contract Payroll {
     assert(employee.id != 0x0);
     _payFullSal(employee);
     employees[index].salary = newsal  * (1 ether);
-    employees[index].lastPayday =now;
   }
 
-    function isExis() returns(address,bool)  {
+  function getSalary() {
     var (employee,index) = _findEmployee(msg.sender);
-    return (employee.id,employee.id !=0x0);
-   }
-
-
-  function getSalary()  {
-    var (employee,index) = _findEmployee(msg.sender);
-    require(employee.id != 0x0);
-    uint nextPayday = employee.lastPayday + payCycle;
+    assert(employee.id == 0x0);
+    uint nextPayday = employee.lastpayday + payCycle;
     assert(nextPayday < now);
-    employees[index].lastPayday = nextPayday;
+    employees[index].lastpayday = nextPayday;
     employee.id.transfer(employee.salary);
    }
 
