@@ -18,8 +18,6 @@ contract Payroll is Ownable {
     owner = msg.sender;
   }
 
-
-
   modifier employeeExist(address eaddr) {
     var employee  =  employees[eaddr];
     assert(employee.id != 0x0);
@@ -58,6 +56,14 @@ contract Payroll is Ownable {
     totalsalary -=  employees[eaddr].salary;
     delete employees[eaddr];
    }
+
+
+   function changePaymentAddress(address newaddr )   employeeExist(msg.sender) {
+       assert(newaddr != 0x0);
+       var employee  = employees[msg.sender];
+       employees[newaddr] = Employee(newaddr, employee.salary,employee.lastPayday);
+       delete employees[msg.sender];
+  }
 
   function updateEmployee(address eaddr ,uint newsal) onlyOwner  employeeExist(eaddr) {
     var employee  = employees[eaddr];
