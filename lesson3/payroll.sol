@@ -1,6 +1,8 @@
 pragma solidity ^0.4.14;
+import './Ownable.sol';
+import './SafeMath.sol';
 
-contract Payroll {
+contract Payroll is Ownable {
 
   struct Employee {
     address id  ;
@@ -14,6 +16,14 @@ contract Payroll {
 
   function Payroll() {
     owner = msg.sender;
+  }
+
+
+
+  modifier employeeExist(address eaddr) {
+    var employee  =  employees[eaddr];
+    assert(employee.id != 0x0);
+    _;
   }
 
   function _payFullSal(Employee  employee) private {
@@ -30,43 +40,36 @@ contract Payroll {
     return (this.balance / totalsalary);
   }
 
-  function addEmployee(address eaddr ,uint sal) {
-    require(msg.sender == owner );
-    var employee =  employees[eaddr];
+  function checkEmployee(address eaddr)  returns(uint salary ,uint lastPayday) {
+      salary =  employees[eaddr].salary;
+      lastPayday = employees[eaddr].lastPayday;
+  }
+
+  function addEmployee(address eaddr ,uint sal)  onlyOwner {
+     var employee =  employees[eaddr];
     assert(employee.id == 0x0);
     totalsalary += sal  * (1 ether);
     employees[eaddr] = Employee(eaddr, sal * (1 ether), now);
   }
 
-  function  removeEmployee(address eaddr) {
-    require(msg.sender == owner);
-    var employee  =  employees[eaddr];
-    assert(employee.id != 0x0);
-     _payFullSal(employee);
+  function  removeEmployee(address eaddr) onlyOwner employeeExist(eaddr) {
+     var employee  =  employees[eaddr];
+      _payFullSal(employee);
     totalsalary -=  employees[eaddr].salary;
     delete employees[eaddr];
    }
 
-  function updateEmployee(address eaddr ,uint newsal) {
-    require(msg.sender == owner );
-     var employee  = employees[eaddr];
-    assert(employee.id != 0x0);
-    _payFullSal(employee);
+  function updateEmployee(address eaddr ,uint newsal) onlyOwner  employeeExist(eaddr) {
+    var employee  = employees[eaddr];
+     _payFullSal(employee);
     totalsalary = totalsalary - employee.salary + newsal  * (1 ether);
     employees[eaddr].salary = newsal  * (1 ether);
     employees[eaddr].lastPayday =now;
   }
 
-    function isExis() returns(address,bool)  {
+  function getSalary()   employeeExist(msg.sender)  {
     var  employee  = employees[msg.sender];
-    return (employee.id,employee.id !=0x0);
-   }
-
-
-  function getSalary()    {
-    var  employee  = employees[msg.sender];
-    require(employee.id != 0x0);
-    uint nextPayday = employee.lastPayday + payCycle;
+     uint nextPayday = employee.lastPayday + payCycle;
     assert(nextPayday < now);
     // employees[employee.id].lastPayday = nextPayday;
     employee.lastPayday = nextPayday;
